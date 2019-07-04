@@ -1,16 +1,16 @@
-/* 
+/*
   * 2                       - data for shift registers
   * 3                       - clock for shift registers
   * 4                       - latch for shift registers
-  * 
-  * 5                       - button? The code by Backyard brains claims there is a 
+  *
+  * 5                       - button? The code by Backyard brains claims there is a
   *                           here but i can't find it
-  * 
+  *
   * 7, 8, 9, 10, 11, 12     - extra DIO pins
   * D13                     - pin connected to colour LEDS in series
-  * 
+  *
   * A0, A1, A2, A3, A4, A5  - EMG inputs
-  * 
+  *
   * By usymmij June 2019
 */
 
@@ -23,6 +23,10 @@
 #define SR_DATA 2
 #define SR_CLOCK 3
 #define SR_LATCH 4
+
+#define DATA 4 //B00000100
+#define CLOCK 8 //B00001000
+#define LATCH 16 //B00010000
 
 int loopCount = 0;
 
@@ -50,15 +54,15 @@ void setup()
   Serial.begin(9600);
   //light up the colored LEDS
   pinMode(ColouredElectrodeLedsPort, OUTPUT);
-  digitalWrite(ColouredElectrodeLedsPort, HIGH);
+  PORTB |= B00100000;
   //pinmode for shift registers
   pinMode(SR_CLOCK, OUTPUT);
   pinMode(SR_LATCH, OUTPUT);
   pinMode(SR_DATA, OUTPUT);
 
-  digitalWrite(SR_LATCH,LOW);
-  digitalWrite(SR_CLOCK, LOW);
-  digitalWrite(SR_DATA, LOW);
+  PORTD &= ~CLOCK;
+  PORTD &= ~LATCH;
+  PORTD &= ~DATA;
 }
 
 void read()
@@ -75,11 +79,25 @@ void output()
 
   for (int i = 0; i < 6; i++)
   {
-    Serial.print(F("EMG"));
     Serial.print(i);
-    Serial.print(EMGData[i]);
+    int buffer[4];
+    for(int j = 0; j < 4; j++) {
+      buffer[j] = (EMGData[i] % 10);
+      EMGData[i] /= 10;
+    }
+    for(int j = 0; j < 4; j++) {
+      Serial.print(buffer[3-j]);
+    }
+    Serial.println();
   }
-  //Serial.println();
+}
+
+int pow(int x, int y) {
+  int ans = 1;
+  for(int i = 1; i <= y; i++) {
+    ans *= y;
+  }
+  return ans;
 }
 
 void input()
@@ -117,13 +135,13 @@ void input()
 
 void DIOPartA()
 {
-  digitalWrite(SR_LATCH, LOW); // turn off latch
+  PORTD &= ~LATCH; // turn off latch
   for (int i = 0; i < 4; i++)
   {
     // 6 * 6 LEDs, but there are 5 8-bit registers so 40 bits of space and 4 bit to clear
-    digitalWrite(SR_DATA, LOW);
-    digitalWrite(SR_CLOCK, HIGH);
-    digitalWrite(SR_CLOCK, LOW);
+    PORTD &= ~DATA;
+    PORTD |= CLOCK;
+    PORTD &= ~CLOCK;
   }
   DIOWriteLED(0);
 }
@@ -135,22 +153,22 @@ void DIOWriteLED(int i)
   {
     if (LEDData[5 - i][5 - j] == 1)
     {
-      digitalWrite(SR_DATA, HIGH);
+      PORTD |= DATA;
     }
     else
     {
-      digitalWrite(SR_DATA, LOW);
+      PORTD &= ~DATA;
     }
-    digitalWrite(SR_CLOCK, HIGH);
-    digitalWrite(SR_CLOCK, LOW);
+    PORTD |= CLOCK;
+    PORTD &= ~CLOCK;
   }
 }
 
 void DIOPartG()
 {
 
-  digitalWrite(SR_LATCH, HIGH); // start the rising edge to output to LEDs
-  digitalWrite(SR_LATCH, LOW);
+  PORTD |= LATCH; // start the rising edge to output to LEDs
+  PORTD &= ~LATCH;
   if (ServoConnected)
   {
     servo.write(map(EMGData[ServoPort], 0, 1024, 105, 190));
@@ -159,71 +177,24 @@ void DIOPartG()
 
 void loop()
 {
-  //reads and ouputs each cycle, but DIO and input is split up
-
-  /*
-  DIOParts:
-  A:load shift registers part 1 (status leds(off), LED set 1)
-  B:load shift registers part 2 (2)
-  C:3
-  D:4
-  E:5
-  F:6
-  G:open shift register latch and Servo output
-  */
-  switch (loopCount)
-  {
-  case 0:
-    loopCount++;
+  //LED output is split between reads and writes
 
     read();
-    output();
     ledStatusCheck();
+    output();
+
     DIOPartA();
+    DIOWriteLED(1);
+    DIOWriteLED(2);
+    DIOWriteLED(3);
 
-    break;
+    input();
+    read();
+    output();
 
-  case 1:       
-    DIOWriteLED(1); 
-                    
-
-    loopCount++;
-    break;
-
-  case 2:
-    read();         
-    output();       
-    DIOWriteLED(2); 
-    input();        
-                  
-    loopCount++;
-    break;
-
-  case 3:     
-    DIOWriteLED(3); 
-                    
-
-    loopCount++;
-    break;
-
-  case 4:
-    read();         
-    output();       
-    DIOWriteLED(4); 
-    loopCount++;
-    break;
-
-  case 5:       
-    DIOWriteLED(5); 
-    loopCount++;
-    break;
-
-  case 6:  
-    DIOPartG(); 
-
-    loopCount = 0;
-    break;
-  }
+    DIOWriteLED(4);
+    DIOWriteLED(5);
+    DIOPartG();
 }
 
 int readAnalog(int port)
