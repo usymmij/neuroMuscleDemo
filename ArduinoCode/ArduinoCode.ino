@@ -11,7 +11,9 @@
   *
   * A0, A1, A2, A3, A4, A5  - EMG inputs
   *
-  * By usymmij June 2019
+  * Download the desktop client here:
+  * https://github.com/usymmij/neuroMuscleDemo
+  * usymmij 2019
 */
 
 #include <Servo.h>
