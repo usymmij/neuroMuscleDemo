@@ -55,15 +55,15 @@ public class Mouse implements MouseListener {
     private void hotbarClickedOptions() {
         if(mouseButton == MouseEvent.BUTTON1) {
             if (y < 35) {
-                if (x > UI.getWidth() - 42) {
-                    Exit.normal(); //clicked the x button
-                } else if(x > UI.getWidth() - 132) {
-                    UI.minimize(); // clicked the minimize(-) button
-                } else if(x < 50) {
-                    if(UI.getState() != UI.Displayed.MENU) {
-                        UI.change(UI.Displayed.MENU);
-                    } else {
+                if (x > UI.getWidth() - 42) {//clicked the x button
+                    Exit.normal();
+                } else if(x > UI.getWidth() - 132) {// clicked the minimize(-) button
+                    UI.minimize();
+                } else if(x < 50) {// clicked menu button
+                    if(UI.getState() == UI.Displayed.MENU) {
                         UI.change(UI.Displayed.ALL);
+                    } else {
+                        UI.change(UI.Displayed.MENU);
                     }
                 }
             }

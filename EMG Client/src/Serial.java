@@ -8,6 +8,10 @@ public class Serial
     private static int currID = 0;
     private static int currValue = 0;
 
+    public static int[] getNumBuffer() {
+        return numBuffer;
+    }
+
     public static void setPort(){
         try {
             port = SerialPort.getCommPorts()[0];
@@ -24,7 +28,9 @@ public class Serial
             port.readBytes(buffer, buffer.length);
             for(int i = 0; i < buffer.length; i++) {
                 if((char)buffer[i] == '\n') {
-                    System.out.println(currID + ": " + currValue);
+                    if(currID < 6 && currID >= 0 && currValue < 1024) {
+                        numBuffer[currID] = currValue;
+                    }
                     currValue = 0;
                     idRead = false;
                 } else if(!idRead) {
