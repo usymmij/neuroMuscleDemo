@@ -17,7 +17,7 @@ public class UI{
     private static EMGPage homePage;
 
     public enum Displayed {
-        ALL, MENU
+        ALL, MENU, RAW
     }
 
     public static Displayed getState() {
@@ -61,10 +61,10 @@ public class UI{
 
     public static void update() {
         long diff = System.currentTimeMillis() - lastMillis;
-        if(currentlyOn == Displayed.ALL &&  diff > 1) {
+        if(currentlyOn == Displayed.ALL &&  diff > 10) {
             EMGPage.setData(Serial.getNumBuffer());
             System.out.println(diff);
-            lastMillis = System.currentTimeMillis() - (diff - 1);
+            lastMillis = System.currentTimeMillis() - (diff - 10);
         }
         ui.validate();
         ui.repaint();

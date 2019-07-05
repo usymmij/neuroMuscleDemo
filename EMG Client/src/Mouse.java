@@ -60,10 +60,10 @@ public class Mouse implements MouseListener {
                 } else if(x > UI.getWidth() - 132) {// clicked the minimize(-) button
                     UI.minimize();
                 } else if(x < 50) {// clicked menu button
-                    if(UI.getState() != UI.Displayed.MENU) {
-                        UI.change(UI.Displayed.MENU);
-                    } else {
+                    if(UI.getState() == UI.Displayed.MENU) {
                         UI.change(UI.Displayed.ALL);
+                    } else {
+                        UI.change(UI.Displayed.MENU);
                     }
                 }
             }
