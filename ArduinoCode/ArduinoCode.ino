@@ -57,6 +57,8 @@ void setup()
   //light up the colored LEDS
   pinMode(ColouredElectrodeLedsPort, OUTPUT);
   PORTB |= B00100000;
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
   //pinmode for shift registers
   pinMode(SR_CLOCK, OUTPUT);
   pinMode(SR_LATCH, OUTPUT);
@@ -92,14 +94,6 @@ void output()
     }
     Serial.println();
   }
-}
-
-int pow(int x, int y) {
-  int ans = 1;
-  for(int i = 1; i <= y; i++) {
-    ans *= y;
-  }
-  return ans;
 }
 
 void input()

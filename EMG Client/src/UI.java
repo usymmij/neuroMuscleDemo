@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 public class UI{
     private static long lastMillis;
     private static Mouse listener;
-    private static boolean decorated = false;
     private static int width = 0;
     private static JFrame ui;
     private static Displayed currentlyOn = Displayed.ALL;
@@ -60,11 +59,8 @@ public class UI{
     }
 
     public static void update() {
-        long diff = System.currentTimeMillis() - lastMillis;
-        if(currentlyOn == Displayed.ALL &&  diff > 10) {
+        if(currentlyOn == Displayed.ALL) {
             EMGPage.setData(Serial.getNumBuffer());
-            System.out.println(diff);
-            lastMillis = System.currentTimeMillis() - (diff - 10);
         }
         ui.validate();
         ui.repaint();
