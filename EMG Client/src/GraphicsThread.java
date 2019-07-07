@@ -9,11 +9,6 @@ public class GraphicsThread extends  Thread {
             UI.update();
             lastTime = System.currentTimeMillis() - (diff + runTime - 10);
             System.out.println(diff);
-            try {
-                Thread.sleep(9 - runTime);
-            } catch(InterruptedException e) {
-                Exit.exitWithError("Thread failed to pause");
-            }
         }
     }
 
