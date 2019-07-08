@@ -9,7 +9,8 @@ public class EMGPage extends Page {
     private static int[] nowData = new int[6];
     private static int sampleLength = 100;//in decieconds
     private final static int Y_BASE_CONSTANT = 170;
-    private final static int Y_CONSTANT = 6; //inversed, higher number is shorter line
+    private final static int SPEED_CONTROL = 6;//inversed, higher number is shorter line
+    private final static int Y_CONSTANT = 6; //inversed
 
     public void newSet(int length) {
         smoothData = new int[6][length];
@@ -33,7 +34,7 @@ public class EMGPage extends Page {
 
         for(int emgIndex = 0; emgIndex < 6; emgIndex++) {
             int yLine = (1 + emgIndex) * Y_BASE_CONSTANT;
-            if(emgIndex < 3){//raw) {
+            if(raw) {
                 //g.fillRect(x1, y1, xStep, 20);
                 for (int i = 0; i < sampleLength - 1; i++) {
                 int x1 = i * xStep;
@@ -50,7 +51,7 @@ public class EMGPage extends Page {
     }
 
     private static void lineRounder(Graphics g, int xCoef, int yLine, int port) {
-        rotateSmoothData(xCoef / 3);
+        rotateSmoothData(xCoef / SPEED_CONTROL);
         int d2 = allData[port][0] - allData[port][1];
         int d1 = allData[port][1] - allData[port][2];
         int dd = d2 - d1;
