@@ -1,13 +1,11 @@
-import javafx.scene.input.MouseButton;
-
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JFrame;
 
 public class Mouse implements MouseListener {
     private static int x, y = 0;
     private static int mouseButton = 0;
+
+    private static UI.Displayed lastState;
 
     public static int getX() {
         return x;
@@ -25,7 +23,9 @@ public class Mouse implements MouseListener {
         if(UI.getState() == UI.Displayed.MENU) {
             menuOptions();
         }
-        hotbarClickedOptions();
+        if (y < 35) {
+            hotbarClickedOptions();
+        }
     }
 
     @Override
@@ -49,24 +49,22 @@ public class Mouse implements MouseListener {
     }
 
     private void menuOptions() {
-        Serial.setPort();
+        CommThread.setMode(CommThread.CommThreadMode.IDLE);
+
     }
 
     private void hotbarClickedOptions() {
-        if(mouseButton == MouseEvent.BUTTON1) {
-            if (y < 35) {
                 if (x > UI.getWidth() - 42) {//clicked the x button
                     Exit.normal();
                 } else if(x > UI.getWidth() - 132) {// clicked the minimize(-) button
                     UI.minimize();
                 } else if(x < 50) {// clicked menu button
-                    if(UI.getState() == UI.Displayed.MENU) {
-                        UI.change(UI.Displayed.ALL);
-                    } else {
+                    if (UI.getState() != UI.Displayed.MENU) {
+                        lastState = UI.getState();
                         UI.change(UI.Displayed.MENU);
+                    } else {
+                        UI.change(UI.Displayed.ALL);
                     }
                 }
-            }
-        }
     }
 }
