@@ -16,7 +16,7 @@ public class UI{
     private static EMGPage homePage;
 
     public enum Displayed {
-        ALL, MENU, RAW
+        ALL, MENU, SINGLE, RAW, DERIVATIVE
     }
 
     public static Displayed getState() {
