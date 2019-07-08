@@ -41,6 +41,7 @@ public class UI{
         width = ui.getWidth();
         ui.addMouseListener(listener);
         ui.getContentPane().add(homePage);
+        homePage.newSet(ui.getWidth());
     }
 
     public static void change(Displayed dis) {
