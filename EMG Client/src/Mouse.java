@@ -50,7 +50,6 @@ public class Mouse implements MouseListener {
 
     private void menuOptions() {
         CommThread.setMode(CommThread.CommThreadMode.IDLE);
-
     }
 
     private void hotbarClickedOptions() {
@@ -66,5 +65,6 @@ public class Mouse implements MouseListener {
                         UI.change(UI.Displayed.ALL);
                     }
                 }
+                UI.update();
     }
 }

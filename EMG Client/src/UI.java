@@ -40,9 +40,11 @@ public class UI{
         ui.addMouseListener(listener);
         ui.getContentPane().add(homePage);
         homePage.newSet(ui.getWidth());
+        currentlyOn = Displayed.ALL;
     }
 
     public static void change(Displayed dis) {
+        currentlyOn = dis;
         ui.getContentPane().removeAll();
         switch (currentlyOn) {
             case ALL:
@@ -54,7 +56,6 @@ public class UI{
         }
         ui.validate();
         ui.repaint();
-        currentlyOn = dis;
     }
 
     public static void update() {
