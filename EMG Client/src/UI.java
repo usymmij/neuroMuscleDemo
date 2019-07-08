@@ -8,7 +8,6 @@ import Pages.Menu;
 import javax.swing.JFrame;
 
 public class UI{
-    private static long lastMillis;
     private static Mouse listener;
     private static int width = 0;
     private static JFrame ui;
@@ -16,7 +15,7 @@ public class UI{
     private static EMGPage homePage;
 
     public enum Displayed {
-        ALL, MENU, RAW
+        ALL, MENU, SINGLE, RAW, DERIVATIVE
     }
 
     public static Displayed getState() {
@@ -29,7 +28,6 @@ public class UI{
 
     public static void start() {
         startListener();
-        lastMillis = System.currentTimeMillis();
         homePage = new EMGPage();
         ui = new JFrame();
         ui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);// closing frame closes program
@@ -45,7 +43,6 @@ public class UI{
     }
 
     public static void change(Displayed dis) {
-        currentlyOn = dis;
         ui.getContentPane().removeAll();
         switch (currentlyOn) {
             case ALL:
@@ -57,6 +54,7 @@ public class UI{
         }
         ui.validate();
         ui.repaint();
+        currentlyOn = dis;
     }
 
     public static void update() {

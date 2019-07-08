@@ -9,6 +9,7 @@ public class Page extends JComponent {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", 0, 50));
 
         //exit box
         g.drawLine(getWidth() - 30, 10, getWidth() - 10, 30);
