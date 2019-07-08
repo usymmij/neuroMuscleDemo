@@ -44,32 +44,48 @@ public class EMGPage extends Page {
                 }
             } else {
                 lineRounder(g, xStep, yLine, emgIndex);
+                //derivative(g, xStep, yLine, emgIndex);
             }
         }
     }
 
     private static void lineRounder(Graphics g, int xCoef, int yLine, int port) {
-        rotateSmoothData();
+        rotateSmoothData(xCoef / 3);
         int d2 = allData[port][0] - allData[port][1];
         int d1 = allData[port][1] - allData[port][2];
         int dd = d2 - d1;
         dd /= xCoef;
-        smoothData[1][1] = allData[0][0] + dd;
+        smoothData[port][0] = allData[port][1] + dd;
         for(int i = 1; i < xCoef; i++) {
             smoothData[port][i] = smoothData[port][i - 1] + dd;
         }
         for(int i = 0; i < smoothData[0].length - 1; i++) {
             int y1 = yLine - (smoothData[port][i] / Y_CONSTANT);
             int y2 = yLine - (smoothData[port][i + 1] / Y_CONSTANT);
-            g.drawLine(i, y1,i+ 1,y2);
+            g.drawLine(i, y1,i + 1,y2);
         }
     }
 
-    private static void rotateSmoothData() {
+    private static void derivative(Graphics g, int xCoef, int yLine, int port) {
+        rotateSmoothData(xCoef/10);
+        int dd = allData[port][0] - allData[port][1];
+        dd /= xCoef;
+        smoothData[port][0] = dd;
+        for(int i = 1; i < xCoef; i++) {
+            smoothData[port][i] = smoothData[port][i - 1] + dd;
+        }
+        for(int i = 0; i < smoothData[0].length - 1; i++) {
+            int y1 = yLine - (smoothData[port][i] / Y_CONSTANT);
+            int y2 = yLine - (smoothData[port][i + 1] / Y_CONSTANT);
+            g.drawLine(i, y1,i + 1,y2);
+        }
+    }
+
+    private static void rotateSmoothData(int rots) {
         for(int i = 0; i < 6; i++) {
             int length = smoothData[i].length;
-            for(int j = 1; j < length ; j++) {
-                smoothData[i][length - j] =  smoothData[i][length - j - 1];
+            for(int j = 1; j < length - rots + 1 ; j++) {
+                smoothData[i][length - j] =  smoothData[i][length - j - rots];
             }
         }
     }
