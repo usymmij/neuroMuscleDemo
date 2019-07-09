@@ -33,20 +33,25 @@ public class EMGPage extends Page {
         int xStep = getWidth() / (sampleLength - 1);
 
         for(int emgIndex = 0; emgIndex < 6; emgIndex++) {
-            int yLine = (1 + emgIndex) * Y_BASE_CONSTANT;
-            if(raw) {
-                //g.fillRect(x1, y1, xStep, 20);
-                for (int i = 0; i < sampleLength - 1; i++) {
+            paint(g, emgIndex, xStep);
+        }
+    }
+
+    private static void paint(Graphics g,int emgIndex, int xStep) {
+
+        int yLine = (1 + emgIndex) * Y_BASE_CONSTANT;
+        if(raw) {
+            //g.fillRect(x1, y1, xStep, 20);
+            for (int i = 0; i < sampleLength - 1; i++) {
                 int x1 = i * xStep;
                 int x2 = x1 + xStep;
                 int y1 = yLine - (allData[emgIndex][i] / Y_CONSTANT);
                 int y2 = yLine - (allData[emgIndex][i + 1] / Y_CONSTANT);
                 g.drawLine(x1, y1, x2, y2);
-                }
-            } else {
-                lineRounder(g, xStep, yLine, emgIndex);
-                //derivative(g, xStep, yLine, emgIndex);
             }
+        } else {
+            //lineRounder(g, xStep, yLine, emgIndex);
+            derivative(g, xStep, yLine, emgIndex);
         }
     }
 

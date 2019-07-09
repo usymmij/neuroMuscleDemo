@@ -8,7 +8,7 @@ public class GraphicsThread extends  Thread {
         if(diff > 10) {
             UI.update();
             lastTime = System.currentTimeMillis() - (diff + runTime - 10);
-            System.out.println(diff);
+            //System.out.println(diff);
         }
     }
 

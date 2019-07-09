@@ -8,15 +8,15 @@ import Pages.Menu;
 import javax.swing.JFrame;
 
 public class UI{
-    private static long lastMillis;
     private static Mouse listener;
     private static int width = 0;
+    private static int height = 0;
     private static JFrame ui;
     private static Displayed currentlyOn = Displayed.ALL;
     private static EMGPage homePage;
 
     public enum Displayed {
-        ALL, MENU, RAW
+        ALL, MENU, SINGLE, RAW, DERIVATIVE
     }
 
     public static Displayed getState() {
@@ -26,10 +26,12 @@ public class UI{
     public static int getWidth() {
         return width;
     }
+    public static int getHeight() {
+        return height;
+    }
 
     public static void start() {
         startListener();
-        lastMillis = System.currentTimeMillis();
         homePage = new EMGPage();
         ui = new JFrame();
         ui.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);// closing frame closes program
@@ -39,9 +41,11 @@ public class UI{
         ui.getContentPane().setBackground(Color.BLACK);
         ui.setVisible(true);
         width = ui.getWidth();
+        height = ui.getHeight();
         ui.addMouseListener(listener);
         ui.getContentPane().add(homePage);
         homePage.newSet(ui.getWidth());
+        currentlyOn = Displayed.ALL;
     }
 
     public static void change(Displayed dis) {
