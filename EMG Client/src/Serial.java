@@ -12,13 +12,19 @@ public class Serial
         return numBuffer;
     }
 
+    public static void closePort() {
+        port.closePort();
+    }
+
     public static void setPort(){
         try {
             port = SerialPort.getCommPorts()[0];
-            System.out.println(SerialPort.getCommPorts()[0]);
+            System.out.println(SerialPort.getCommPorts().length);
             port.openPort();
+            System.out.println("opened port");
             CommThread.setMode(CommThread.CommThreadMode.OUTPUT);
         } catch(Exception e) {
+            Exit.exitWithError("could not open port");
         }
     }
 

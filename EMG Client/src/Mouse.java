@@ -49,7 +49,24 @@ public class Mouse implements MouseListener {
     }
 
     private void menuOptions() {
-        CommThread.setMode(CommThread.CommThreadMode.IDLE);
+        if(x > UI.getWidth() / 2 - 500 && x < UI.getWidth() / 2 + 500) {//buttons
+            int baseHeight = UI.getHeight() / 10;
+            if(y > baseHeight + 10 && y < baseHeight + 10 + 100)  {//button 0
+
+            } else if(y > baseHeight * 2 + 30 && y < baseHeight * 2 + 20 + 100)  {//button 1
+
+            } else if(y > baseHeight * 3 + 30 && y < baseHeight * 3 + 30 + 100)  {//button 2
+
+            } else if(y > baseHeight * 4 + 40 && y < baseHeight * 4 + 40 + 100)  {//button 3
+
+            } else if(y > baseHeight * 5 + 50 && y < baseHeight * 5 + 50 + 100)  {//button 4
+
+            } else if(y > baseHeight * 6 + 60 && y < baseHeight * 6 + 60 + 100)  {//button 5
+                CommThread.setMode(CommThread.CommThreadMode.IDLE);
+                Serial.closePort();
+                UI.change(lastState);
+            }
+        }
     }
 
     private void hotbarClickedOptions() {
@@ -58,11 +75,11 @@ public class Mouse implements MouseListener {
                 } else if(x > UI.getWidth() - 132) {// clicked the minimize(-) button
                     UI.minimize();
                 } else if(x < 50) {// clicked menu button
-                    if (UI.getState() != UI.Displayed.MENU) {
+                    if (UI.getState() == UI.Displayed.MENU) {
+                        UI.change(lastState);
+                    } else {
                         lastState = UI.getState();
                         UI.change(UI.Displayed.MENU);
-                    } else {
-                        UI.change(UI.Displayed.ALL);
                     }
                 }
                 UI.update();
