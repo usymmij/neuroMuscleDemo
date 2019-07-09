@@ -16,7 +16,13 @@ public class UI{
     private static EMGPage homePage;
 
     public enum Displayed {
-        ALL, MENU, SINGLE, RAW, DERIVATIVE
+        ALL("interpolated data"), MENU(""), SINGLE(""),
+        RAW("uninterpolated data"), DERIVATIVE("derivative data");
+
+        public final String label;
+        Displayed(String label) {
+            this.label = label;
+        }
     }
 
     public static Displayed getState() {
@@ -53,10 +59,25 @@ public class UI{
         ui.getContentPane().removeAll();
         switch (currentlyOn) {
             case ALL:
+                EMGPage.display = 0;
+                EMGPage.mode = 0;
                 ui.getContentPane().add(homePage);
                 break;
+            case RAW:
+                EMGPage.display = 0;
+                EMGPage.mode = 1;
+                ui.getContentPane().add(homePage);
+                break;
+            case DERIVATIVE:
+                EMGPage.display = 0;
+                EMGPage.mode = 2;
+                ui.getContentPane().add(homePage);
+                break;
+            case SINGLE:
+                EMGPage.display = 1;
+                ui.getContentPane().add(homePage);
             case MENU:
-                ui.getContentPane().add(new Menu());
+                ui.getContentPane().add(new Menu(Mouse.lastState.label));
                 break;
         }
         ui.validate();

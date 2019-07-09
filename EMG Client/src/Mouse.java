@@ -4,8 +4,11 @@ import java.awt.event.MouseListener;
 public class Mouse implements MouseListener {
     private static int x, y = 0;
     private static int mouseButton = 0;
+    private static UI.Displayed typeSlotA = UI.Displayed.RAW;
+    private static UI.Displayed typeSlotB = UI.Displayed.DERIVATIVE;
 
-    private static UI.Displayed lastState;
+    public static UI.Displayed lastState;
+    public static UI.Displayed lastAllState;
 
     public static int getX() {
         return x;
@@ -52,8 +55,24 @@ public class Mouse implements MouseListener {
         if(x > UI.getWidth() / 2 - 500 && x < UI.getWidth() / 2 + 500) {//buttons
             int baseHeight = UI.getHeight() / 10;
             if(y > baseHeight + 10 && y < baseHeight + 10 + 100)  {//button 0
+                UI.change(typeSlotA);
+                if(typeSlotA == UI.Displayed.RAW) {
+                    typeSlotA = UI.Displayed.ALL;
+                    typeSlotB = UI.Displayed.DERIVATIVE;
+                } else{
+                    typeSlotA = UI.Displayed.RAW;
+                    typeSlotB = UI.Displayed.DERIVATIVE;
+                }
 
             } else if(y > baseHeight * 2 + 30 && y < baseHeight * 2 + 20 + 100)  {//button 1
+                UI.change(typeSlotB);
+                if(typeSlotB == UI.Displayed.DERIVATIVE) {
+                    typeSlotA = UI.Displayed.RAW;
+                    typeSlotB = UI.Displayed.ALL;
+                } else{
+                    typeSlotA = UI.Displayed.RAW;
+                    typeSlotB = UI.Displayed.DERIVATIVE;
+                }
 
             } else if(y > baseHeight * 3 + 30 && y < baseHeight * 3 + 30 + 100)  {//button 2
 
@@ -78,7 +97,13 @@ public class Mouse implements MouseListener {
                     if (UI.getState() == UI.Displayed.MENU) {
                         UI.change(lastState);
                     } else {
-                        lastState = UI.getState();
+                        if(UI.getState() == UI.Displayed.ALL || UI.getState() == UI.Displayed.RAW ||
+                                UI.getState() == UI.Displayed.DERIVATIVE ){
+                            lastState = UI.getState();
+                            lastAllState = lastState;
+                        } else if(UI.getState() == UI.Displayed.SINGLE) {
+                            lastState = UI.getState();
+                        }
                         UI.change(UI.Displayed.MENU);
                     }
                 }

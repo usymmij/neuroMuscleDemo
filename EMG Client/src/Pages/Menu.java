@@ -3,8 +3,20 @@ package Pages;
 import java.awt.*;
 
 public class Menu extends Page {
+    String stringSlotA;
+    String stringSlotB;
 
-    public Menu() {
+    public Menu(String current) {
+        if(current.equals("derivative data")) {
+            stringSlotA = "uninterpolated data";
+            stringSlotB = "interpolated data";
+        } else if(current.equals("uninterpolated data")) {
+            stringSlotA = "interpolated data";
+            stringSlotB = "derivative data";
+        } else{
+            stringSlotA = "uninterpolated data";
+            stringSlotB = "derivative data";
+        }
     }
 
     @Override
@@ -17,9 +29,9 @@ public class Menu extends Page {
         }
         //remember to add auto text removal for the current mode in the future
         g.setColor(Color.BLACK);
-        g.drawString("Uninterpolated data", getWidth() / 2 - 480,
+        g.drawString(stringSlotA, getWidth() / 2 - 480,
                 (getHeight() / 10) + 70);
-        g.drawString("derivative data", getWidth() / 2 - 480,
+        g.drawString(stringSlotB, getWidth() / 2 - 480,
                 (getHeight() / 10 * 2) + 90);
         g.drawString("add servo to pin 12", getWidth() / 2 - 480,
                 (getHeight() / 10 * 3) + 100);

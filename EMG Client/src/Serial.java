@@ -19,9 +19,8 @@ public class Serial
     public static void setPort(){
         try {
             port = SerialPort.getCommPorts()[0];
-            System.out.println(SerialPort.getCommPorts().length);
             port.openPort();
-            System.out.println("opened port");
+            //System.out.println("opened port");
             CommThread.setMode(CommThread.CommThreadMode.OUTPUT);
         } catch(Exception e) {
             Exit.exitWithError("could not open port");

@@ -3,8 +3,10 @@ package Pages;
 import java.awt.Graphics;
 
 public class EMGPage extends Page {
-    private static boolean raw = false;
+    public static int mode = 0;//0 = normal, 1 = raw, 2 = deriv
+    public static int display = 0;//1-6 = EMG, 0 = all
     private static int[][] smoothData = new int[6][100];
+    private static int[][] derivData = new int[6][100];
     private static int[][] allData = new int[6][100];
     private static int[] nowData = new int[6];
     private static int sampleLength = 100;//in decieconds
@@ -14,6 +16,7 @@ public class EMGPage extends Page {
 
     public void newSet(int length) {
         smoothData = new int[6][length];
+        derivData = new int[6][length];
     }
 
     public static void setData(int[] inData) {
@@ -30,17 +33,30 @@ public class EMGPage extends Page {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        //System.out.println(mode + " " + display);
         int xStep = getWidth() / (sampleLength - 1);
 
-        for(int emgIndex = 0; emgIndex < 6; emgIndex++) {
-            paint(g, emgIndex, xStep);
+        if(display == 0) {
+            for (int emgIndex = 0; emgIndex < 6; emgIndex++) {
+                paint(g, emgIndex, xStep, 0);
+            }
+        } else {
+            for(int i = 0; i < 3; i++) {
+                mode = i;
+                paint(g, display + 1, xStep, i * 2);
+            }
         }
     }
 
-    private static void paint(Graphics g,int emgIndex, int xStep) {
+    private static void paint(Graphics g,int emgIndex, int xStep, int singleModeLinePush) {
 
-        int yLine = (1 + emgIndex) * Y_BASE_CONSTANT;
-        if(raw) {
+        int yLine = 0;
+        if(singleModeLinePush == 0) {
+            yLine = (1 + emgIndex) * Y_BASE_CONSTANT;
+        } else {
+            yLine = singleModeLinePush * 2 * Y_BASE_CONSTANT;
+        }
+        if(mode == 1) {System.out.println("awdkanjdwada");
             //g.fillRect(x1, y1, xStep, 20);
             for (int i = 0; i < sampleLength - 1; i++) {
                 int x1 = i * xStep;
@@ -49,14 +65,14 @@ public class EMGPage extends Page {
                 int y2 = yLine - (allData[emgIndex][i + 1] / Y_CONSTANT);
                 g.drawLine(x1, y1, x2, y2);
             }
-        } else {
-            //lineRounder(g, xStep, yLine, emgIndex);
+        } else if(mode == 0){
+            lineRounder(g, xStep, yLine, emgIndex);
+        } else if(mode == 2) {
             derivative(g, xStep, yLine, emgIndex);
         }
     }
 
     private static void lineRounder(Graphics g, int xCoef, int yLine, int port) {
-        rotateSmoothData(xCoef / SPEED_CONTROL);
         int d2 = allData[port][0] - allData[port][1];
         int d1 = allData[port][1] - allData[port][2];
         int dd = d2 - d1;
@@ -70,21 +86,22 @@ public class EMGPage extends Page {
             int y2 = yLine - (smoothData[port][i + 1] / Y_CONSTANT);
             g.drawLine(i, y1,i + 1,y2);
         }
+        rotateSmoothData(xCoef/10);
     }
 
     private static void derivative(Graphics g, int xCoef, int yLine, int port) {
-        rotateSmoothData(xCoef/10);
         int dd = allData[port][0] - allData[port][1];
         dd /= xCoef;
-        smoothData[port][0] = dd;
+        derivData[port][0] = dd;
         for(int i = 1; i < xCoef; i++) {
-            smoothData[port][i] = smoothData[port][i - 1] + dd;
+            derivData[port][i] = derivData[port][i - 1] + dd;
         }
-        for(int i = 0; i < smoothData[0].length - 1; i++) {
-            int y1 = yLine - (smoothData[port][i] / Y_CONSTANT);
-            int y2 = yLine - (smoothData[port][i + 1] / Y_CONSTANT);
+        for(int i = 0; i < derivData[0].length - 1; i++) {
+            int y1 = yLine - (derivData[port][i] / Y_CONSTANT);
+            int y2 = yLine - (derivData[port][i + 1] / Y_CONSTANT);
             g.drawLine(i, y1,i + 1,y2);
         }
+        rotateDerivData(xCoef/10);
     }
 
     private static void rotateSmoothData(int rots) {
@@ -92,6 +109,15 @@ public class EMGPage extends Page {
             int length = smoothData[i].length;
             for(int j = 1; j < length - rots + 1 ; j++) {
                 smoothData[i][length - j] =  smoothData[i][length - j - rots];
+            }
+        }
+    }
+
+    private static void rotateDerivData(int rots) {
+        for(int i = 0; i < 6; i++) {
+            int length = derivData[i].length;
+            for(int j = 1; j < length - rots + 1 ; j++) {
+                derivData[i][length - j] =  derivData[i][length - j - rots];
             }
         }
     }
