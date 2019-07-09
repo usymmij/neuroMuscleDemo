@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 public class UI{
     private static Mouse listener;
     private static int width = 0;
+    private static int height = 0;
     private static JFrame ui;
     private static Displayed currentlyOn = Displayed.ALL;
     private static EMGPage homePage;
@@ -25,6 +26,9 @@ public class UI{
     public static int getWidth() {
         return width;
     }
+    public static int getHeight() {
+        return height;
+    }
 
     public static void start() {
         startListener();
@@ -37,6 +41,7 @@ public class UI{
         ui.getContentPane().setBackground(Color.BLACK);
         ui.setVisible(true);
         width = ui.getWidth();
+        height = ui.getHeight();
         ui.addMouseListener(listener);
         ui.getContentPane().add(homePage);
         homePage.newSet(ui.getWidth());
