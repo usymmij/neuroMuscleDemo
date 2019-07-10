@@ -5,8 +5,9 @@ import java.awt.Graphics;
 public class EMGPage extends Page {
     public static int mode = 0;//0 = normal, 1 = raw, 2 = deriv
     public static int display = 0;//1-6 = EMG, 0 = all
-    private static int[][] smoothData = new int[6][100];
-    private static int[][] derivData = new int[6][100];
+    private static double[] allX;
+    private static double[][] smoothData;
+    private static int[][] derivData;
     private static int[][] allData = new int[6][100];
     private static int[] nowData = new int[6];
     private static int sampleLength = 100;//in decieconds
@@ -15,8 +16,12 @@ public class EMGPage extends Page {
     private final static int Y_CONSTANT = 6; //inversed
 
     public void newSet(int length) {
-        smoothData = new int[6][length];
+        smoothData = new double[6][length];
         derivData = new int[6][length];
+        allX = new double[100];
+        for(int i = 0; i < 100; i++) {
+            allX[i] = i * (double)(getWidth() / (sampleLength - 1));
+        }
     }
 
     public static void setData(int[] inData) {
@@ -49,14 +54,15 @@ public class EMGPage extends Page {
     }
 
     private static void paint(Graphics g,int emgIndex, int xStep, int singleModeLinePush) {
-
         int yLine = 0;
         if(singleModeLinePush == 0) {
             yLine = (1 + emgIndex) * Y_BASE_CONSTANT;
         } else {
             yLine = singleModeLinePush * 2 * Y_BASE_CONSTANT;
         }
-        if(mode == 1) {System.out.println("awdkanjdwada");
+        if(mode == 0) {
+            lineRounder(g, xStep, yLine, emgIndex);
+        } else if(mode == 1){
             //g.fillRect(x1, y1, xStep, 20);
             for (int i = 0; i < sampleLength - 1; i++) {
                 int x1 = i * xStep;
@@ -65,32 +71,32 @@ public class EMGPage extends Page {
                 int y2 = yLine - (allData[emgIndex][i + 1] / Y_CONSTANT);
                 g.drawLine(x1, y1, x2, y2);
             }
-        } else if(mode == 0){
-            lineRounder(g, xStep, yLine, emgIndex);
         } else if(mode == 2) {
             derivative(g, xStep, yLine, emgIndex);
         }
     }
 
     private static void lineRounder(Graphics g, int xCoef, int yLine, int port) {
-        int d2 = allData[port][0] - allData[port][1];
-        int d1 = allData[port][1] - allData[port][2];
-        int dd = d2 - d1;
-        dd /= xCoef;
-        smoothData[port][0] = allData[port][1] + dd;
+        int d1 = allData[port][0] - allData[port][1];
+        int d2 = allData[port][1] - allData[port][2];
+        int dd = (d1 - d2) / (xCoef);
+        int currSlope = d2 / (xCoef);
+        smoothData[port][0] = allData[port][0];
         for(int i = 1; i < xCoef; i++) {
-            smoothData[port][i] = smoothData[port][i - 1] + dd;
+            smoothData[port][i] = smoothData[port][i - 1] + (currSlope / xCoef);
+            currSlope += (dd/xCoef);
         }
         for(int i = 0; i < smoothData[0].length - 1; i++) {
-            int y1 = yLine - (smoothData[port][i] / Y_CONSTANT);
-            int y2 = yLine - (smoothData[port][i + 1] / Y_CONSTANT);
+            int y1 = (int)(yLine - (smoothData[port][i] / Y_CONSTANT));
+            int y2 = (int)(yLine - (smoothData[port][i + 1] / Y_CONSTANT));
             g.drawLine(i, y1,i + 1,y2);
+            //g.drawLine(i, y1, i, y1);
         }
-        rotateSmoothData(xCoef/10);
+        rotateSmoothData(xCoef / 10);
     }
 
     private static void derivative(Graphics g, int xCoef, int yLine, int port) {
-        int dd = allData[port][0] - allData[port][1];
+        int dd = ((int)allData[port][0]) - (int)allData[port][1];
         dd /= xCoef;
         derivData[port][0] = dd;
         for(int i = 1; i < xCoef; i++) {
@@ -108,7 +114,7 @@ public class EMGPage extends Page {
         for(int i = 0; i < 6; i++) {
             int length = smoothData[i].length;
             for(int j = 1; j < length - rots + 1 ; j++) {
-                smoothData[i][length - j] =  smoothData[i][length - j - rots];
+                smoothData[i][length - j] = smoothData[i][length - j - rots];
             }
         }
     }

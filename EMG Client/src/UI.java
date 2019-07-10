@@ -85,7 +85,7 @@ public class UI{
     }
 
     public static void update() {
-        if(currentlyOn == Displayed.ALL) {
+        if(currentlyOn != Displayed.MENU) {
             EMGPage.setData(Serial.getNumBuffer());
         }
         ui.validate();

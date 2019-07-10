@@ -23,7 +23,6 @@ public class Serial
             //System.out.println("opened port");
             CommThread.setMode(CommThread.CommThreadMode.OUTPUT);
         } catch(Exception e) {
-            Exit.exitWithError("could not open port");
         }
     }
 
@@ -35,6 +34,8 @@ public class Serial
                 if((char)buffer[i] == '\n') {
                     if(currID < 6 && currID >= 0 && currValue < 1024) {
                         numBuffer[currID] = currValue;
+                        if(currID == 0) {
+                        }
                     }
                     currValue = 0;
                     idRead = false;
