@@ -54,6 +54,14 @@ public class UI{
         currentlyOn = Displayed.ALL;
     }
 
+    public static void change(Displayed dis, int single) {
+        change(dis);
+        EMGPage.display = single;
+        ui.getContentPane().add(homePage);
+        ui.validate();
+        ui.repaint();
+    }
+
     public static void change(Displayed dis) {
         currentlyOn = dis;
         ui.getContentPane().removeAll();
@@ -73,9 +81,6 @@ public class UI{
                 EMGPage.mode = 2;
                 ui.getContentPane().add(homePage);
                 break;
-            case SINGLE:
-                EMGPage.display = 1;
-                ui.getContentPane().add(homePage);
             case MENU:
                 ui.getContentPane().add(new Menu(Mouse.lastState.label));
                 break;

@@ -12,7 +12,6 @@ public class EMGPage extends Page {
     private static int[] nowData = new int[6];
     private static int sampleLength = 100;//in decieconds
     private final static int Y_BASE_CONSTANT = 170;
-    private final static int SPEED_CONTROL = 6;//inversed, higher number is shorter line
     private final static int Y_CONSTANT = 6; //inversed
 
     public void newSet(int length) {
@@ -48,7 +47,7 @@ public class EMGPage extends Page {
         } else {
             for(int i = 0; i < 3; i++) {
                 mode = i;
-                paint(g, display + 1, xStep, i * 2);
+                paint(g, display + 1, xStep, i + 1);
             }
         }
     }
@@ -58,7 +57,7 @@ public class EMGPage extends Page {
         if(singleModeLinePush == 0) {
             yLine = (1 + emgIndex) * Y_BASE_CONSTANT;
         } else {
-            yLine = singleModeLinePush * 2 * Y_BASE_CONSTANT;
+            yLine = (((singleModeLinePush - 1) * 2) + 1) * Y_BASE_CONSTANT;
         }
         if(mode == 0) {
             lineRounder(g, xStep, yLine, emgIndex);

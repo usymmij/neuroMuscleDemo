@@ -25,6 +25,9 @@ public class Mouse implements MouseListener {
         mouseButton = e.getButton();
         if(UI.getState() == UI.Displayed.MENU) {
             menuOptions();
+        } else if(UI.getState() == UI.Displayed.DERIVATIVE || UI.getState() ==
+                UI.Displayed.RAW || UI.getState() == UI.Displayed.ALL) {
+            singleOptions();
         }
         if (y < 35) {
             hotbarClickedOptions();
@@ -49,6 +52,24 @@ public class Mouse implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
 
+    }
+
+    private void singleOptions() {
+        if(y > 35) {//not hotbar
+            if(y < 170) {//1
+                UI.change(UI.Displayed.SINGLE, 1);
+            } else if(y < 170 * 2) {//2
+                UI.change(UI.Displayed.SINGLE, 2);
+            } else if(y < 170 * 3) {//3
+                UI.change(UI.Displayed.SINGLE, 3);
+            } else if(y < 170 * 4) {//4
+                UI.change(UI.Displayed.SINGLE, 4);
+            } else if(y < 170 * 5) {//5
+                UI.change(UI.Displayed.SINGLE, 5);
+            } else if(y < 170 * 6) {//6
+                UI.change(UI.Displayed.SINGLE, 6);
+            }
+        }
     }
 
     private void menuOptions() {
